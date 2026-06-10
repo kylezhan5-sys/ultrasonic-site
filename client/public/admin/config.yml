@@ -1,0 +1,208 @@
+# ============================================================
+# Decap CMS Configuration — SonoTech Ultrasonic
+# Backend: GitHub OAuth via Vercel Serverless Functions
+# Docs: https://decapcms.org/docs/github-backend/
+# ============================================================
+
+backend:
+  # Use GitHub backend with your own OAuth app (works on Vercel)
+  name: github
+  repo: YOUR_GITHUB_USERNAME/YOUR_REPO_NAME   # ← REPLACE with your GitHub repo, e.g. "kyle-zhang/sonotech-site"
+  branch: main                                 # ← branch that Vercel deploys from
+  base_url: https://YOUR_VERCEL_DOMAIN        # ← REPLACE with your Vercel domain, e.g. "https://sonotech.vercel.app"
+  auth_endpoint: /api/auth                     # Vercel Serverless Function route
+
+# Allow local development with npx decap-server
+# Uncomment the line below when running locally, comment it out before deploying
+# local_backend: true
+
+# Media uploads go to the content/uploads folder in your repo
+media_folder: "client/public/assets/img/uploads"
+public_folder: "/assets/img/uploads"
+
+# Site URL for live preview links in the CMS editor
+site_url: https://YOUR_VERCEL_DOMAIN  # ← REPLACE with your Vercel domain
+
+# Show a live preview of content while editing
+show_preview_links: true
+
+# ============================================================
+# CONTENT COLLECTIONS
+# Each collection maps to a folder of Markdown files in your repo.
+# When you save in the CMS, it commits the .md file to GitHub.
+# Vercel auto-deploys on every commit, rebuilding the HTML pages.
+# ============================================================
+
+collections:
+
+  # ----------------------------------------------------------
+  # BLOG ARTICLES
+  # Files: content/blog/*.md
+  # Published HTML: client/public/blog/*.html (auto-rebuilt on deploy)
+  # ----------------------------------------------------------
+  - name: "blog"
+    label: "Blog Articles"
+    label_singular: "Blog Article"
+    folder: "content/blog"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: "title"
+    summary: "{{title}} — {{date}}"
+    sortable_fields: ["date", "title", "category"]
+    fields:
+      - { label: "Title", name: "title", widget: "string", hint: "Used as <h1> and <title> tag" }
+      - { label: "URL Slug", name: "slug", widget: "string", hint: "e.g. ultrasonic-spray-guide → /blog/ultrasonic-spray-guide.html" }
+      - { label: "Meta Description (SEO)", name: "meta_desc", widget: "string", hint: "150–160 characters. Appears in Google search results." }
+      - { label: "Category", name: "category", widget: "select", options: ["Spray Coating", "Fuel Cell", "Battery", "Electrolyzer", "Equipment Guide", "Industry News"] }
+      - { label: "Publish Date", name: "date", widget: "datetime" }
+      - { label: "Author", name: "author", widget: "string", default: "SonoTech Engineering Team" }
+      - { label: "Featured Image", name: "image", widget: "image", required: false, hint: "Recommended: 1200×630 px" }
+      - { label: "Article Body", name: "body", widget: "markdown", hint: "Full article content. Supports headings, tables, images, and links." }
+
+  # ----------------------------------------------------------
+  # CASE STUDIES
+  # Files: content/case-studies/*.md
+  # Published HTML: client/public/case-studies/*.html
+  # ----------------------------------------------------------
+  - name: "case_studies"
+    label: "Case Studies"
+    label_singular: "Case Study"
+    folder: "content/case-studies"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: "title"
+    summary: "{{title}} — {{industry}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "URL Slug", name: "slug", widget: "string", hint: "e.g. fuel-cell-coating-project → /case-studies/fuel-cell-coating-project.html" }
+      - { label: "Meta Description (SEO)", name: "meta_desc", widget: "string" }
+      - { label: "Industry", name: "industry", widget: "select", options: ["Fuel Cell", "Electrolyzer", "Battery", "Solar Cell", "Medical", "Automotive", "Textile", "Hydrogen Production"] }
+      - { label: "Featured Image", name: "image", widget: "image", required: false }
+      - label: "Key Result Metrics"
+        name: "metrics"
+        widget: "list"
+        required: false
+        hint: "Up to 3 headline numbers shown in the results panel"
+        fields:
+          - { label: "Value", name: "value", widget: "string", hint: "e.g. 40%" }
+          - { label: "Label", name: "label", widget: "string", hint: "e.g. Pt Catalyst Savings" }
+      - { label: "Full Content", name: "body", widget: "markdown", hint: "Include: Customer Background, Challenge, Solution, Results sections" }
+
+  # ----------------------------------------------------------
+  # PRODUCTS
+  # Files: content/products/*.md
+  # Published HTML: client/public/products/*.html
+  # ----------------------------------------------------------
+  - name: "products"
+    label: "Products"
+    label_singular: "Product"
+    folder: "content/products"
+    create: false       # Products are pre-defined; set to true to allow adding new ones
+    slug: "{{slug}}"
+    identifier_field: "title"
+    summary: "{{title}} — {{category}}"
+    fields:
+      - { label: "Product Name", name: "title", widget: "string" }
+      - { label: "URL Slug", name: "slug", widget: "string", hint: "Must match the HTML filename, e.g. ultrasonic-spray-coating-system" }
+      - { label: "Meta Description (SEO)", name: "meta_desc", widget: "string", hint: "150–160 characters" }
+      - { label: "Category", name: "category", widget: "select", options: ["Spray Coating", "Atomizing", "Processing", "Welding", "Cutting", "Textile", "Components"] }
+      - { label: "Short Description", name: "short_desc", widget: "text", hint: "1–2 sentences shown in product cards and listings" }
+      - { label: "Featured Image", name: "image", widget: "image", required: false }
+      - label: "Technical Specifications"
+        name: "specs"
+        widget: "list"
+        required: false
+        hint: "Each row appears as a row in the spec table on the product page"
+        fields:
+          - { label: "Parameter", name: "param", widget: "string", hint: "e.g. Frequency" }
+          - { label: "Value", name: "value", widget: "string", hint: "e.g. 25 / 40 / 60 / 120 kHz" }
+      - { label: "Full Product Description", name: "body", widget: "markdown", hint: "Detailed description, features, applications, ordering info" }
+
+  # ----------------------------------------------------------
+  # APPLICATIONS
+  # Files: content/applications/*.md
+  # Published HTML: client/public/applications/*.html
+  # ----------------------------------------------------------
+  - name: "applications"
+    label: "Application Pages"
+    label_singular: "Application Page"
+    folder: "content/applications"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: "title"
+    fields:
+      - { label: "Page Title", name: "title", widget: "string" }
+      - { label: "URL Slug", name: "slug", widget: "string", hint: "e.g. fuel-cell → /applications/fuel-cell.html" }
+      - { label: "Meta Description (SEO)", name: "meta_desc", widget: "string" }
+      - { label: "Industry", name: "industry", widget: "select", options: ["Fuel Cell", "Electrolyzer", "Battery", "Solar Cell", "Medical", "Automotive", "Textile", "Hydrogen Production"] }
+      - { label: "Hero Image", name: "hero_image", widget: "image", required: false }
+      - { label: "Page Content", name: "body", widget: "markdown", hint: "Include: Overview, Equipment Recommendations, Process Parameters, Related Case Studies" }
+
+  # ----------------------------------------------------------
+  # DOWNLOADS
+  # Files: content/downloads/*.md
+  # Published HTML: client/public/downloads/index.html (listing page)
+  # ----------------------------------------------------------
+  - name: "downloads"
+    label: "Downloads & Resources"
+    label_singular: "Download"
+    folder: "content/downloads"
+    create: true
+    slug: "{{slug}}"
+    identifier_field: "title"
+    summary: "{{title}} — {{category}}"
+    fields:
+      - { label: "Document Title", name: "title", widget: "string" }
+      - { label: "URL Slug", name: "slug", widget: "string" }
+      - { label: "File URL", name: "file_url", widget: "file", hint: "Upload the PDF/document file here" }
+      - { label: "File Size", name: "file_size", widget: "string", hint: "e.g. 2.1 MB", required: false }
+      - { label: "File Type", name: "file_type", widget: "select", options: ["PDF", "ZIP", "Excel", "Word", "CAD"], default: "PDF" }
+      - { label: "Category", name: "category", widget: "select", options: ["Product Datasheet", "Application Note", "Technical Guide", "Certificate", "CAD Drawing", "Software"] }
+      - { label: "Publish Date", name: "date", widget: "datetime" }
+      - { label: "Description", name: "description", widget: "text", hint: "Brief description of what this document contains" }
+      - { label: "Body (optional)", name: "body", widget: "markdown", required: false }
+
+  # ----------------------------------------------------------
+  # SITE SETTINGS
+  # Files: content/settings/*.yml
+  # These control company-wide information used across all pages.
+  # After editing, Vercel rebuilds and injects the new values.
+  # ----------------------------------------------------------
+  - name: "settings"
+    label: "Site Settings"
+    files:
+
+      - label: "Company Information"
+        name: "company"
+        file: "content/settings/company.yml"
+        fields:
+          - { label: "Company Full Name", name: "company_name", widget: "string" }
+          - { label: "Short Name (for header/footer)", name: "short_name", widget: "string" }
+          - { label: "Sales Email", name: "email", widget: "string" }
+          - { label: "WhatsApp Number", name: "whatsapp", widget: "string", hint: "Include country code, e.g. +86 138-0000-0000" }
+          - { label: "Phone", name: "phone", widget: "string", required: false }
+          - { label: "Company Address", name: "address", widget: "text", required: false }
+          - { label: "Website URL", name: "site_url", widget: "string" }
+          - { label: "Homepage Meta Description", name: "meta_desc", widget: "text" }
+          - { label: "Google Analytics ID", name: "ga_id", widget: "string", required: false, hint: "e.g. G-XXXXXXXXXX" }
+
+      - label: "Homepage Content"
+        name: "homepage"
+        file: "content/settings/homepage.md"
+        fields:
+          - { label: "Hero Headline", name: "hero_headline", widget: "string" }
+          - { label: "Hero Sub-headline", name: "hero_subheadline", widget: "text" }
+          - { label: "Primary CTA Button Text", name: "hero_cta_primary", widget: "string", default: "Explore Products" }
+          - { label: "Secondary CTA Button Text", name: "hero_cta_secondary", widget: "string", default: "Request a Quote" }
+          - { label: "Stat 1 — Value", name: "stat_1_value", widget: "string", default: "10+" }
+          - { label: "Stat 1 — Label", name: "stat_1_label", widget: "string", default: "Years Experience" }
+          - { label: "Stat 2 — Value", name: "stat_2_value", widget: "string", default: "500+" }
+          - { label: "Stat 2 — Label", name: "stat_2_label", widget: "string", default: "Projects Delivered" }
+          - { label: "Stat 3 — Value", name: "stat_3_value", widget: "string", default: "40+" }
+          - { label: "Stat 3 — Label", name: "stat_3_label", widget: "string", default: "Countries Served" }
+          - { label: "Stat 4 — Value", name: "stat_4_value", widget: "string", default: "ISO" }
+          - { label: "Stat 4 — Label", name: "stat_4_label", widget: "string", default: "Certified Quality" }
+          - { label: "Bottom CTA Headline", name: "cta_headline", widget: "string" }
+          - { label: "Bottom CTA Body Text", name: "cta_body", widget: "text" }
+          - { label: "Bottom CTA Button Text", name: "cta_button", widget: "string" }
+          - { label: "Body", name: "body", widget: "markdown", required: false }
