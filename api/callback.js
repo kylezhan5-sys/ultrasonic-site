@@ -119,6 +119,7 @@ function buildPostMessageHTML(status, content) {
       var message = ${message};
       alert(JSON.stringify(message,null,2));
       if (window.opener) {
+        console.log("TOKEN SENT", message.content.token);
         window.opener.postMessage(
           'authorization:github:success:' + message.content.token,
           '*'
