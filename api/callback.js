@@ -117,6 +117,7 @@ function buildPostMessageHTML(status, content) {
     // Send token back to the Decap CMS opener window
     (function() {
       var message = ${message};
+      alert(JSON.stringify(message,null,2));
       if (window.opener) {
         window.opener.postMessage(
           'authorization:github:success:' + message.content.token,
