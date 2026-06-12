@@ -119,11 +119,11 @@ function buildPostMessageHTML(status, content) {
       var message = ${message};
       if (window.opener) {
         window.opener.postMessage(
-          'authorization:github:' + message.status + ':' + JSON.stringify(message.content),
-          window.location.origin
+          'authorization:github:success:' + message.content.token,
+          '*'
         );
         // Small delay so user sees the success/error message
-        setTimeout(function() { window.close(); }, 1000);
+        setTimeout(function() { window.close(); }, 300);
       } else {
         // Fallback: redirect to admin if no opener
         setTimeout(function() { window.location.href = '/admin/'; }, 2000);
