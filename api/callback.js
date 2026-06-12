@@ -116,8 +116,7 @@ function buildPostMessageHTML(status, content) {
   <script>
     // Send token back to the Decap CMS opener window
     (function() {
-      var message = ${message};
-      alert(JSON.stringify(message,null,2));
+      var message = ${message};    
       if (window.opener) {
         console.log("TOKEN SENT", message.content.token);
         window.opener.postMessage(
